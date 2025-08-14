@@ -1,98 +1,69 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Player CCTV WSS (SvelteKit + JSMpeg)</title>
-
-  <!-- CSS dari Dishub (boleh dipertahankan; tidak wajib kalau kamu mau minimalis) -->
-  <link rel="stylesheet" href="https://dishub-api.vercel.app/_app/immutable/assets/0.CKPUwkJK.css">
-  <link rel="stylesheet" href="https://dishub-api.vercel.app/_app/immutable/assets/3.DG6qycVs.css">
-
-  <style>
-    :root, html, body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      height: 100%;
-      width: 100%;
+<meta charset="UTF-8">
+<title>WSS CCTV Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        background: #000;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
     }
-    /* Area mount Svelte (biar UI/loader bawaan Dishub tetap terlihat) */
-    #svelte-root {
-      position: fixed;
-      inset: 0;
-      display: contents; /* mengikuti struktur asli mereka (display: contents) */
+    canvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        object-fit: contain;
+        background: #000;
     }
-
-    /* Kanvas pemutar (sesuai requirement kamu) */
-    #videoCanvas {
-      width: 100vw;
-      height: 100vh;
-      background: #000;
-      object-fit: contain;
-      display: block;
-    }
-
-    /* Hilangkan kontrol apapun: JSMpeg tidak menampilkan kontrol video native, jadi aman */
-  </style>
+</style>
 </head>
-<body data-sveltekit-preload-data="hover">
-  <!-- ROOT tempat SvelteKit akan mount -->
-  <div id="svelte-root" style="display: contents"></div>
+<body>
+<canvas id="videoCanvas"></canvas>
 
-  <!-- Kanvas video di atas/bawah Svelte (di sini ditaruh setelah root agar tetap di atas background) -->
-  <canvas id="videoCanvas"></canvas>
+<!-- Ambil dari file lokal -->
+<script src="jsmpeg.min.js"></script>
 
-  <!-- ======== SVELTEKIT DISHUB ======== -->
-  <script>
-    // Paksa base SvelteKit ke domain Dishub agar resource relatif (manifest/SW/analytics) tidak minta ke GitHub Pages
-    // Gunakan nama variabel sama seperti contoh asli (boleh beda, yang penting konsisten).
-    window.__sveltekit_1wz5pgf = {
-      base: "https://dishub-api.vercel.app"
-    };
+<script>
+(function() {
+    // Ambil URL WSS dari hash (#...) atau default
+    const streamUrl = window.location.hash
+        ? window.location.hash.substring(1)
+        : "wss://strata.petakon.id/api/ws?src=7QQJrjgvbTwRFZIMHAjiPP";
 
-    // Ambil elemen mount Svelte yang jelas (bukan parentElement dari <script>)
-    const svelteRoot = document.getElementById('svelte-root');
-    const data = [null, null];
-
-    Promise.all([
-      import("https://dishub-api.vercel.app/_app/immutable/entry/start.BL18UNXx.js"),
-      import("https://dishub-api.vercel.app/_app/immutable/entry/app.DtvkY5WM.js")
-    ]).then(([kit, app]) => {
-      kit.start(app, svelteRoot, {
-        node_ids: [0, 3],
-        data,
-        form: null,
-        error: null
-      });
-    });
-  </script>
-
-  <!-- ======== JSMpeg dari repo kamu ======== -->
-  <script src="./jsmpeg.min.js"></script>
-
-  <!-- ======== Inisialisasi player ======== -->
-  <script>
-    // Ambil URL WSS dari hash, atau fallback ke link contoh kamu
-    const url = location.hash.substring(1) || "wss://strata.petakon.id/api/ws?src=7QQJrjgvbTwRFZIMHAjiPP";
-
-    const canvas = document.getElementById("videoCanvas");
-    const player = new JSMpeg.Player(url, {
-      canvas: canvas,
-      autoplay: true,
-      audio: false,
-      loop: true,
-      // Kamu bisa tambah opsi lain kalau perlu
+    // Buat player
+    const canvas = document.getElementById('videoCanvas');
+    const player = new JSMpeg.Player(streamUrl, {
+        canvas: canvas,
+        autoplay: true,
+        audio: false,
+        loop: true
     });
 
-    // (Opsional) Minta fullscreen saat user berinteraksi (autofullscreen tanpa gesture biasanya diblok browser)
-    const goFS = () => {
-      if (document.fullscreenElement) return;
-      if (canvas.requestFullscreen) canvas.requestFullscreen().catch(()=>{});
-    };
-    // Satu kali saja cukup
-    window.addEventListener('click', goFS, { once: true });
-    window.addEventListener('touchstart', goFS, { once: true });
-  </script>
+    // Minta fullscreen otomatis
+    function enterFullscreen() {
+        if (canvas.requestFullscreen) {
+            canvas.requestFullscreen();
+        } else if (canvas.webkitRequestFullscreen) { // Safari
+            canvas.webkitRequestFullscreen();
+        } else if (canvas.msRequestFullscreen) { // IE/Edge
+            canvas.msRequestFullscreen();
+        }
+    }
+
+    // Coba masuk fullscreen setelah load
+    setTimeout(enterFullscreen, 500);
+
+    // Agar autoplay di browser ketat tetap berjalan
+    document.addEventListener('click', function() {
+        enterFullscreen();
+        if (player && player.play) player.play();
+    });
+})();
+</script>
 </body>
 </html>
