@@ -1,69 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>WSS CCTV Player</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MSE Player Auto Fullscreen</title>
 <style>
     html, body {
+        height: 100%;
         margin: 0;
-        padding: 0;
-        background: #000;
-        width: 100vw;
-        height: 100vh;
+        background: black;
         overflow: hidden;
     }
     canvas {
         display: block;
-        width: 100vw;
-        height: 100vh;
-        object-fit: contain;
-        background: #000;
+        width: 100%;
+        height: 100%;
+        background: black;
     }
 </style>
 </head>
 <body>
+
 <canvas id="videoCanvas"></canvas>
 
-<!-- Ambil dari file lokal -->
+<!-- Load JSMpeg dari file lokal -->
 <script src="jsmpeg.min.js"></script>
-
 <script>
-(function() {
-    // Ambil URL WSS dari hash (#...) atau default
-    const streamUrl = window.location.hash
-        ? window.location.hash.substring(1)
-        : "wss://strata.petakon.id/api/ws?src=7QQJrjgvbTwRFZIMHAjiPP";
-
-    // Buat player
+window.addEventListener('load', function () {
+    const url = "wss://strata.petakon.id/api/ws?src=7QQJrjgvbTwRFZIMHAjiPP";
     const canvas = document.getElementById('videoCanvas');
-    const player = new JSMpeg.Player(streamUrl, {
+
+    // Inisialisasi player
+    const player = new JSMpeg.Player(url, {
         canvas: canvas,
         autoplay: true,
         audio: false,
-        loop: true
+        loop: false,
     });
 
-    // Minta fullscreen otomatis
+    // Paksa fullscreen otomatis
     function enterFullscreen() {
         if (canvas.requestFullscreen) {
             canvas.requestFullscreen();
-        } else if (canvas.webkitRequestFullscreen) { // Safari
+        } else if (canvas.webkitRequestFullscreen) { 
             canvas.webkitRequestFullscreen();
-        } else if (canvas.msRequestFullscreen) { // IE/Edge
+        } else if (canvas.mozRequestFullScreen) { 
+            canvas.mozRequestFullScreen();
+        } else if (canvas.msRequestFullscreen) { 
             canvas.msRequestFullscreen();
         }
     }
 
-    // Coba masuk fullscreen setelah load
-    setTimeout(enterFullscreen, 500);
-
-    // Agar autoplay di browser ketat tetap berjalan
-    document.addEventListener('click', function() {
+    // Minta fullscreen 1 detik setelah load
+    setTimeout(() => {
         enterFullscreen();
-        if (player && player.play) player.play();
-    });
-})();
+    }, 1000);
+});
 </script>
+
 </body>
 </html>
