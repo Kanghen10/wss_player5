@@ -5,9 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Player CCTV WSS</title>
 
-  <!-- CSS dari Dishub -->
-  <link rel="stylesheet" href="https://dishub-api.vercel.app/_app/immutable/assets/0.CKPUwkJK.css">
-  <link rel="stylesheet" href="https://dishub-api.vercel.app/_app/immutable/assets/3.DG6qycVs.css">
+  <!-- CSS bawaan -->
+  <link rel="stylesheet" href="./_app/immutable/assets/0.CKPUwkJK.css">
+  <link rel="stylesheet" href="./_app/immutable/assets/3.DG6qycVs.css">
+
+  <!-- Preload semua asset -->
+  <link rel="modulepreload" href="./_app/immutable/entry/start.BL18UNXx.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/entry.mTv6l8rF.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/runtime.BHF6rQi7.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/index.tJp0IRFE.js">
+  <link rel="modulepreload" href="./_app/immutable/entry/app.DtvkY5WM.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/svelte-head.D-wlFnnF.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/store.BTeNBWqB.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/disclose-version.DkujaFa7.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/index-client.Ba_ip7Is.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/this.Y9gmeG8_.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/props.Cj5Py-d5.js">
+  <link rel="modulepreload" href="./_app/immutable/nodes/0.BAP_fa2r.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/window.Dyt_sgPu.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/stores.CbYFurAM.js">
+  <link rel="modulepreload" href="./_app/immutable/nodes/3.BWE0jpVL.js">
+  <link rel="modulepreload" href="./_app/immutable/chunks/_commonjsHelpers.CKFE9By0.js">
 
   <style>
     body {
@@ -30,18 +48,15 @@
   <!-- Elemen video -->
   <canvas id="videoCanvas"></canvas>
 
-  <script>
+  <!-- Script utama bawaan Dishub -->
+  <script type="module">
     {
-      __sveltekit_custom = {
-        base: "https://dishub-api.vercel.app"
-      };
-
       const element = document.currentScript.parentElement;
       const data = [null, null];
 
       Promise.all([
-        import("https://dishub-api.vercel.app/_app/immutable/entry/start.BL18UNXx.js"),
-        import("https://dishub-api.vercel.app/_app/immutable/entry/app.DtvkY5WM.js")
+        import("./_app/immutable/entry/start.BL18UNXx.js"),
+        import("./_app/immutable/entry/app.DtvkY5WM.js")
       ]).then(([kit, app]) => {
         kit.start(app, element, {
           node_ids: [0, 3],
@@ -53,8 +68,8 @@
     }
   </script>
 
-  <!-- JSMpeg dari GitHub kamu -->
-  <script src="https://kanghen10.github.io/wss_player5/jsmpeg.min.js"></script>
+  <!-- JSMpeg dari repo kamu -->
+  <script src="./jsmpeg.min.js"></script>
 
   <!-- Inisialisasi player -->
   <script>
