@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Player CCTV WSS</title>
+
+  <!-- CSS dari Dishub -->
+  <link rel="stylesheet" href="https://dishub-api.vercel.app/_app/immutable/assets/0.CKPUwkJK.css">
+  <link rel="stylesheet" href="https://dishub-api.vercel.app/_app/immutable/assets/3.DG6qycVs.css">
+
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    canvas {
+      max-width: 100%;
+      max-height: 100%;
+      background: #000;
+    }
+  </style>
+</head>
+<body data-sveltekit-preload-data="hover">
+
+  <!-- Elemen video -->
+  <canvas id="videoCanvas"></canvas>
+
+  <script>
+    {
+      __sveltekit_custom = {
+        base: "https://dishub-api.vercel.app"
+      };
+
+      const element = document.currentScript.parentElement;
+      const data = [null, null];
+
+      Promise.all([
+        import("https://dishub-api.vercel.app/_app/immutable/entry/start.BL18UNXx.js"),
+        import("https://dishub-api.vercel.app/_app/immutable/entry/app.DtvkY5WM.js")
+      ]).then(([kit, app]) => {
+        kit.start(app, element, {
+          node_ids: [0, 3],
+          data,
+          form: null,
+          error: null
+        });
+      });
+    }
+  </script>
+
+  <!-- JSMpeg dari GitHub kamu -->
+  <script src="https://kanghen10.github.io/wss_player5/jsmpeg.min.js"></script>
+
+  <!-- Inisialisasi player -->
+  <script>
+    const url = location.hash.substring(1) || "wss://strata.petakon.id/api/ws?src=7QQJrjgvbTwRFZIMHAjiPP";
+    const canvas = document.getElementById("videoCanvas");
+    const player = new JSMpeg.Player(url, {
+      canvas: canvas,
+      autoplay: true,
+      audio: false
+    });
+  </script>
+</body>
+</html>
